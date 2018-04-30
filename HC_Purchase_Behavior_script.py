@@ -16,7 +16,7 @@ import time, sys
 start = time.time()
 
 def update_progress(job_title, progress):
-    length = 100 # modify this to change the length
+    length = 30 # modify this to change the length
     block = int(round(length*progress))
     msg = "\r{0}: [{1}] {2}%".format(job_title, "#"*block + "-"*(length-block), round(progress*100, 2))
     if progress >= 1: msg += " DONE\r\n"
@@ -49,9 +49,7 @@ update_progress("Processing data...", 0.3)
 sales_data = sales_data[~sales_data['Customer_Name'].str.contains("Total for")]
 
 
-
 sales_data = sales_data.dropna(axis = 0, subset=['Date'])
-
 
 
 sales_data['Date'] = pd.to_datetime(sales_data['Date'])
@@ -791,16 +789,20 @@ update_progress("Writing file...", 0.5)
 
 time_string = (pd.to_datetime('now')).strftime("%m-%d-%Y_%H-%M")
 file_name = 'HC_purchase_data_export_'+time_string+'.csv'
+file_name1 = 'HC_purchase_data_cleaned_'+time_string+'.csv'
 out_dir = '.\\purchase_data_exports'
 
 if not os.path.exists(out_dir):
     os.mkdir(out_dir)
 
 full_path = os.path.join(out_dir, file_name)
+full_path1 = os.path.join(out_dir, file_name1)
 
 df_merged.to_csv(full_path, sep = ",", encoding = "utf-8")
 
-update_progress("Writing file...", 1)
+sales_data.to_csv(full_path1, sep=',', encoding='utf-8')
+
+update_progress("Writing files...", 1)
 
 end = time.time()
 
