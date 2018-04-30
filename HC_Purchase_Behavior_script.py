@@ -31,9 +31,10 @@ f_input = input('Enter the input file name with .csv (exported from QuickBooks r
 
 
 if f_input is None or f_input == '':
+	print('You didn\'t enter a file name. Using \'sales_by_class.csv\' as the default file name')
 	f_input = 'sales_by_class.csv'
 
-sales_data = pd.read_csv(f_input)
+sales_data = pd.read_csv(f_input, skiprows=4)
 
 update_progress("Processing data...", 0.1)
 
