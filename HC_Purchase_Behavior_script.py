@@ -575,7 +575,7 @@ def get_app_type(row):
     len_exp = re.compile(r'\d{1,2}[ANBGR]\/?\s(\d{2})\s?[SL]?') #len_exp.search(r['Product/Service]).group(1)
     color_exp = re.compile(r'(\d{1,2})[ANBGR]\/?')
     
-    m_desc = row[['Memo/Description', 'Product/Service']]
+    m_desc = row[['Memo/Description', 'Product/Service', 'Qty']]
     #return m_desc['Memo/Description'].iloc[0]
     #return row.count()
     
@@ -592,45 +592,46 @@ def get_app_type(row):
         if (((not 'ionix' in r['Memo/Description'].lower()) | (not 'ionix' in r['Product/Service'].lower())) & (not 'color ring' in r['Product/Service'].lower()) & (not 'copper link' in r['Memo/Description'].lower())& (not 'SERVICES' in r['Product/Service']) & (not 'cylinder copper link' in r['Memo/Description'].lower()) & (not 'cylinder link' in r['Memo/Description'].lower())):
             
             if ('poly' in r['Memo/Description'].lower())             & (not 'poly remover' in r['Product/Service'].lower()) & (not 'SERVICES' in r['Product/Service']):
-                poly_count += 1
+                poly_count += r['Qty']
             
             if ('wefts' in r['Memo/Description'].lower()) & (not 'SERVICES' in r['Product/Service']):
-                weft_count += 1
+                weft_count += r['Qty']
             # Done: @vishal: make sure that cylinder copper link and cylinder links are not counted here
             if ('cylinder' in r['Memo/Description'].lower()) & (not 'SERVICES' in r['Product/Service']):
-                cylinder_count += 1
+                cylinder_count += r['Qty']
                 # debug
                 #product_list.append(r['Memo/Description'])
                 
             if 'layered' in r['Memo/Description'].lower():
-                layered_count += 1
+                layered_count += r['Qty']
                 
             if 'curly' in r['Memo/Description'].lower():
-                curly_count += 1
+                curly_count += r['Qty']
                 
             if 'premium' in r['Memo/Description'].lower():
-                premium_count += 1
+                premium_count += r['Qty']
                 
             if len_exp.search(r['Product/Service']) is not None:
                 tmp_val = len_exp.search(r['Product/Service']).group(1)
-                total_len_count += 1
+                total_len_count += r['Qty']
                 
                 if not tmp_val in len_dict:
-                    len_dict[tmp_val] = 1
+                    len_dict[tmp_val] = r['Qty']
                 else:
-                    len_dict[tmp_val] += 1
+                    len_dict[tmp_val] += r['Qty']
                     
             if color_exp.search(r['Product/Service']) is not None:
                 tmp_val = color_exp.search(r['Product/Service']).group(1)
                 total_color_count += 1
                 
                 if not tmp_val in color_dict:
-                    color_dict[tmp_val] = 1
+                    color_dict[tmp_val] = r['Qty']
                 else:
-                    color_dict[tmp_val] += 1
+                    color_dict[tmp_val] += r['Qty']
                     
         else:
-            other_count += 1
+        	# @vishal: the total uncompressed quantity
+            other_count += r['Qty']
             # debug
             #other_list.append(r['Memo/Description'])
         
@@ -752,7 +753,7 @@ def get_app_type(row):
 update_progress("Getting application types...", 0.5)
 
 
-t6 = sales_item_only[['Memo/Description', 'Product/Service']].groupby(['Customer_Name'], as_index = True).apply(get_app_type)#.to_frame()#apply(lambda x: x['Memo/Description'].str.contains('Poly Remover')).to_frame()
+t6 = sales_item_only[['Memo/Description', 'Product/Service', 'Qty']].groupby(['Customer_Name'], as_index = True).apply(get_app_type)#.to_frame()#apply(lambda x: x['Memo/Description'].str.contains('Poly Remover')).to_frame()
 
 
 update_progress("Getting application types...", 1)
