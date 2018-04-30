@@ -573,7 +573,7 @@ def get_app_type(row):
     '''
     
     len_exp = re.compile(r'\d{1,2}[ANBGR]\/?\s(\d{2})\s?[SL]?') #len_exp.search(r['Product/Service]).group(1)
-    color_exp = re.compile(r'(\d{1,2})[ANBGR]\/?')
+    color_exp = re.compile(r'(\d{1,2}[ANBGR]\/?\d?\d?[ANBGR]?)') #re.compile(r'(\d{1,2})[ANBGR]\/?')
     
     m_desc = row[['Memo/Description', 'Product/Service', 'Qty']]
     #return m_desc['Memo/Description'].iloc[0]
